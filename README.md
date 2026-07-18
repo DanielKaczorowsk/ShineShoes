@@ -1,7 +1,9 @@
 ## Table of contents
-- Folder structure
+
 - Login/Register
 - Custom Exception
+- Microservices
+- Folder structure
 - License
 ## Login/Register
     Director (UserDirector): Orchestrates the execution of the build process.
