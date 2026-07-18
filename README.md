@@ -5,7 +5,7 @@
 - License
 ## Login/Register
     Director (UserDirector): Orchestrates the execution of the build process.
-    
+
     Builder (UserBuilderInterface): Individual steps (e.g., password checking, JWT generation) implemented as modular components.
     
     Factory: Dynamically selects the required builders based on the action (Login vs. Registration).
@@ -37,32 +37,36 @@ Custom Exception in GlobalExceptionHandler
     }
 ```
 ## Microservices
-### Product system
-    Frontend (Vite + React): Packages files and JSON FormData metadata.
-    
-    Backend (Spring Boot): Using @RequestPart annotations and the Jackson engine, automatically deserializes the Blob into a DTO object.
-    
-    Data Layer (JPA/Hibernate + PostgreSQL): The system prevents duplicate records. Before saving, it checks the unique business key (Product + Color + Size):
-    
-    Exists: Increments the quantity field (UPDATE).
-    
-    Does not exist: Creates a new variant entity (INSERT)
+### Basket/Favorite Services
+    A simple system for sending data from the frontend to a DTO,
+    utilizing `@RequestBody` and `@AuthenticationPrincipal` for user authorization.
 ## Folder Structure
-src/
-- main/java/
-  - Builders/
-  	- UserBuilders/
-  - com.example.shineshoes/          
-  - Controllers/         
-  - DTO/          
-  - Exceptions/              
-  - Factory/
-  - Model/
-  	- Operation/
-   		- ProductsOperation/
-  - Repository/
-  - Services/
-- resources/
+    frontend/
+      - api/
+      - assets/
+      - components/
+      - lib/
+        
+    src(backend)/
+        - main/java/com.example.shineshoes/
+            - core/
+                - builders/
+                    - user/
+                    - login
+                    - register
+                - cache/
+                - controllers/       
+                - dto/     
+                - exceptions/              
+                - factory/
+                - model/
+                    - basket/
+                    - favorite/
+                    - product/
+                - repository/
+                - services/
+            - security/
+        - resources/
 ## License
 
 This project is licensed under the MIT License — see LICENSE for details.
