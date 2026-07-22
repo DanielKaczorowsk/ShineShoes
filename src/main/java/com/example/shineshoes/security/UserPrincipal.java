@@ -2,12 +2,14 @@ package com.example.shineshoes.security;
 
 import com.example.shineshoes.core.model.User;
 import lombok.Getter;
+import org.jspecify.annotations.NullMarked;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.Collections;
 @Getter
+@NullMarked
 public class UserPrincipal implements UserDetails
 {
     private final Long id;

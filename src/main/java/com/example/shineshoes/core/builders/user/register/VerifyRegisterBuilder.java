@@ -25,7 +25,7 @@ public class VerifyRegisterBuilder implements RegisterBuilderInterface
     private String createTemplate(String name)
     {
         UUID verifyToken = UUID.randomUUID();
-        String link = "http://localhost:3000/activate?token=" + verifyToken;
+        String link = "${app.cors.allowed-origins}/activate?token=" + verifyToken;
         Context context = new Context();
         context.setVariable("token",link);
         return templateEngine.process("email/ActiveAccount.html",context);
@@ -47,7 +47,7 @@ public class VerifyRegisterBuilder implements RegisterBuilderInterface
         catch (MessagingException e)
         {
             log.error(e.getMessage());
-            throw new ShopException(ErrorCode.Email_Error);
+            throw new ShopException(ErrorCode.EMAIL_ERROR);
         }
         catch (Exception e)
         {

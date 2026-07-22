@@ -17,11 +17,11 @@ public class CheckRegisterBuilder implements  RegisterBuilderInterface
     {
         if(userRepository.existsByEmail(query.getEmail()))
         {
-            throw new ShopException(ErrorCode.Email_Used);
+            throw new ShopException(ErrorCode.EMAIL_USED);
         }
         if(userRepository.existsByName(query.getName()))
         {
-            throw new ShopException(ErrorCode.Name_User);
+            throw new ShopException(ErrorCode.NAME_USED);
         }
     }
 }

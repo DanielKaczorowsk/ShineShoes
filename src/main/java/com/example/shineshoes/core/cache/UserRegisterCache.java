@@ -11,7 +11,7 @@ import java.util.List;
 @Component
 public class UserRegisterCache implements UserCacheInterface
 {
-    private final List<Class<? extends UserBuilderInterface>> cacheRegister = new ArrayList<>();;
+    private final List<Class<? extends UserBuilderInterface>> cacheRegister = new ArrayList<>();
     public UserRegisterCache()
     {
         this.cacheRegister.add(CheckRegisterBuilder.class);

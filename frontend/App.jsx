@@ -9,6 +9,9 @@ import Dashboard from "./components/Dashboard";
 import FormProduct from "./components/FormProduct";
 import Home from "./components/Home";
 import ProductView from "./components/ProductView";
+import { addBasket } from "./api/ShopProvider";
+import {useGetDataProvider} from "./api/GetProviderData";
+import {useSetDataProvider} from "./api/SetDataProvider";
 
 const ProtectedRoute = ({ isLoggedIn }) => {
     if (!isLoggedIn) return <Navigate to="/login" replace />;
@@ -57,7 +60,17 @@ function classNames(...classes) {
 }
 function App() {
     const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('token'));
-
+    const [productData, setProductData] = useState({
+        name: '',
+        category: [],
+        description: '',
+        model: '',
+        price: 0,
+        variantProduct: [
+            { size: "", color: "", quantity: 0 }
+        ]
+    });
+    const { execute: addToBasket, status } = useSetDataProvider(() => addBasket(productData));
     const handleLogout = () => {
         localStorage.removeItem('token');
         setIsLoggedIn(false);

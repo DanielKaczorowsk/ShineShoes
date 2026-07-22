@@ -1,4 +1,6 @@
 import { PhotoIcon } from '@heroicons/react/24/solid'
+
+
 import {
     Combobox,
     ComboboxChip,
@@ -15,6 +17,7 @@ import { productProvider } from '../api/ProductProvider';
 import {InputGroup, InputGroupAddon, InputGroupInput, InputGroupText} from "./ui/input-group";
 import {useState} from "react";
 import {useNavigate} from "react-router-dom";
+import {useSetDataProvider} from "../api/SetDataProvider";
 
 const data = [{}]
 const category = ["sportowe", "klasyczne", "glany"]
@@ -24,8 +27,8 @@ const color = ["zielony" , "czarny"]
 const FormProduct = () => {
     const navigate = useNavigate();
 
-    const [error, setError] = useState('');
-    const [success, setSuccess] = useState(false);
+    const [status, setStatus] = useState('');
+    const [loading, setLoading] = useState(false);
     const [img, setImg] = useState([]);
     const [productData, setProductData] = useState({
         name: '',
@@ -39,6 +42,8 @@ const FormProduct = () => {
     });
 
     const anchorCategory = useComboboxAnchor();
+    const { execute: saveProduct,isLoading:productLoading,status:productStatus } =
+        useSetDataProvider(() => productProvider(productData,filteredVariants,img))
 
     const addVariant = () => {
         setProductData(prev => ({
@@ -92,24 +97,31 @@ const FormProduct = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        setError('');
-        setSuccess(false);
+        setStatus('');
+        setLoading(false);
 
         const filteredVariants = productData.variantProduct.filter(v =>
             v.size && v.color && v.quantity > 0
         );
 
         if (filteredVariants.length === 0) {
-            setError("Dodaj przynajmniej jeden wariant");
+            setStatus("Dodaj przynajmniej jeden wariant");
             return;
         }
 
         if (hasDuplicates(filteredVariants)) {
-            setError("Duplikaty wariantów (size + color)");
+            setStatus("Duplikaty wariantów (size + color)");
             return;
         }
-        console.log(productData);
-        try {
+        const response = await saveProduct(productData, filteredVariants, img);
+
+        if (response && response.items) {
+            setTimeout(() => {
+                navigate('/dashboard');
+            }, 1500);
+        }
+
+        /*try {
             await productProvider(
                 productData,
                 filteredVariants,
@@ -124,7 +136,7 @@ const FormProduct = () => {
 
         } catch (err) {
             setError(err?.message || "Błąd dodawania produktu");
-        }
+        }*/
     };
     return (
         <form onSubmit={handleSubmit} method="POST">
@@ -346,10 +358,9 @@ const FormProduct = () => {
                             type="submit"
                             className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                         >
-                            Zapisz
+                            {isServerLoading ? "Zapisywanie..." : "Zapisz"}
                         </button>
-                        {success && <p className="text-green-500">Dodano produkt</p>}
-                        {error && <p className="text-red-500">{error}</p>}
+                        {loading === true ? <p className="text-green-500">Dodano produkt</p> : <p className="text-red-500">{status}</p>}
                     </div>
                 </div>
             </div>

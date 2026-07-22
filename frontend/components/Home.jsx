@@ -21,36 +21,16 @@ import banner1 from '../assets/banner/Banner_1.png';
 import banner2 from '../assets/banner/Banner_2.png';
 import banner3 from '../assets/banner/Banner_3.png';
 import {namesData, newestData} from "../api/ShopProvider";
+import { useGetDataProvider } from "../api/GetProviderData";
+
 const bannerImg = [banner1,banner2,banner3];
 const Home = () => {
     const plugin = React.useRef(
         Autoplay({ delay: 2000, stopOnInteraction: true })
     )
-    const [newProductData, setNewProductData] = useState([]);
-    const [newNamesData , setNewNamesData] = useState([]);
-    const [favorite, setFavorite] = useState([]);
-    React.useEffect(() =>{
-        const newProduct = async () => {
-            try {
-                const newProductData = await newestData();
-                setNewProductData(newProductData);
-            }catch (e) {
-                console.error(e.message);
-            }
-        };
-        newProduct().catch((err) => console.error("Unhandled promise:", err));
-    },[])
-    React.useEffect(() =>{
-        const newNames = async () => {
-            try {
-                const newNamesData = await namesData();
-                setNewNamesData(newNamesData);
-            }catch (e) {
-                console.error(e.message);
-            }
-        };
-        newNames().catch((err) => console.error("Unhandled promise:", err));
-    },[])
+    const [favorite , setFavorite] = useState([]);
+    const {items:newProductData,isLoading:productLoading,newestProductRefresh} = useGetDataProvider(newestData);
+    const {items:newNamesData,isLoading:productModelsLoading,modelRefresh} = useGetDataProvider(namesData);
     const toggleFavorite = (index) => {
         if (favorite.includes(index)) {
             setFavorite(favorite.filter((i) => i !== index));

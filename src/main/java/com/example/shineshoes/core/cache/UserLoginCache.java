@@ -10,7 +10,7 @@ import java.util.List;
 @Component
 public class UserLoginCache implements UserCacheInterface
 {
-    private final List<Class<? extends UserBuilderInterface>> cacheLogin = new ArrayList<>();;
+    private final List<Class<? extends UserBuilderInterface>> cacheLogin = new ArrayList<>();
 
     public UserLoginCache()
     {

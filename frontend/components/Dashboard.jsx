@@ -9,22 +9,12 @@ import {
     PaginationLink, PaginationNext,
     PaginationPrevious
 } from "./ui/pagination";
+import {useGetDataProvider} from "../api/GetProviderData";
 
 const Dashboard = () => {
 
     const navigate = useNavigate();
-    const [newProductData, setNewProductData] = useState([]);
-    React.useEffect(() =>{
-        const newProduct = async () => {
-            try {
-                const newProductData = await newestData();
-                setNewProductData(newProductData);
-            }catch (e) {
-                console.error(e.message);
-            }
-        };
-        newProduct().catch((err) => console.error("Unhandled promise:", err));
-    },[])
+    const {items:newProductData,newProductLoading,newProductRefresh} = useGetDataProvider(newestData);
 
     return (
         <div className="min-h-full pt-3">

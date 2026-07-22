@@ -6,8 +6,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -23,12 +21,6 @@ public class SecurityConfig {
         this.jwtAuthFilter = jwtAuthFilter;
     }
     @Bean
-    public UserDetailsService userDetailsService() {
-        return username -> {
-            throw new UsernameNotFoundException("User not found");
-        };
-    }
-    @Bean
     public PasswordEncoder passwordEncoder()
     {
         return new BCryptPasswordEncoder();
@@ -39,14 +31,13 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(request -> {
                     var corsConfiguration = new org.springframework.web.cors.CorsConfiguration();
-                    corsConfiguration.setAllowedOrigins(java.util.List.of("http://localhost:3000"));
+                    corsConfiguration.setAllowedOrigins(java.util.List.of("${app.cors.allowed-origins}"));
                     corsConfiguration.setAllowedMethods(java.util.List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                     corsConfiguration.setAllowedHeaders(java.util.List.of("*"));
                     corsConfiguration.setAllowCredentials(true);
                     return corsConfiguration;
                 }))
                 .authorizeHttpRequests(auth -> auth
-                        //.requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/api/v1/auth/**").permitAll()
                         .requestMatchers("/api/v1/shopSite/**").permitAll()
                         .requestMatchers("/ws/**").permitAll()

@@ -12,10 +12,8 @@ public class UserDirector
     public void build(UserDTO query,List<UserBuilderInterface> list)
     {
         if (list == null || list.isEmpty()) {
-            throw new ShopException(ErrorCode.Empty_Class);
+            throw new ShopException(ErrorCode.EMPTY_CLASS);
         }
-        list.forEach(b->{
-            b.build(query);
-        });
+        list.forEach(b-> b.build(query));
     }
 }

@@ -48,3 +48,6 @@ logging:
     org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping: TRACE
     org.springframework.web.servlet.DispatcherServlet: DEBUG
     org.springframework.security: DEBUG
+app:
+  cors:
+    allowed-origins: "http://localhost:3000"

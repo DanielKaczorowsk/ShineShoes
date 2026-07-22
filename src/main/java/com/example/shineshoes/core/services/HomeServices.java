@@ -16,23 +16,23 @@ import java.util.List;
 @RequiredArgsConstructor
 public class HomeServices
 {
-    public final ProductRepository product;
+    public final ProductRepository productRepository;
     @Transactional
-    public List<SimpleProductDTO> getNewsBoots()
+    public List<SimpleProductDTO> getNewBoots()
     {
-        return product.findTop30ByOrderByCreatedAtDesc();
+        return productRepository.findTop30ByOrderByCreatedAtDesc();
     }
     @Transactional
     public List<Product> getTopProduct(String name)
     {
         Pageable topTen = PageRequest.of(0, 30);
-        return product.findProductByCategoryWithTop(name,topTen);
+        return productRepository.findProductByCategoryWithTop(name,topTen);
     }
     @Transactional
         public List<String> findDistinctNames()
     {
         Pageable model = PageRequest.of(0, 30);
-        return product.findDistinctNames(model);
+        return productRepository.findDistinctNames(model);
     }
 
 }

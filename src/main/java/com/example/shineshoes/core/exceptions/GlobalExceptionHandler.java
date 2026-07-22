@@ -8,12 +8,15 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler
 {
+    private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
     @ExceptionHandler(ShopException.class)
     public ResponseEntity<ExceptionDTO> handleShopException(ShopException ex)
     {
@@ -23,7 +26,7 @@ public class GlobalExceptionHandler
                 .status(error.getStatus())
                 .timestamp(LocalDateTime.now())
                 .get();
-
+        logger.error(ex.getMessage(),ex);
         return ResponseEntity.status(error.getStatus()).body(dto);
     }
     @ExceptionHandler(Exception.class)
@@ -34,7 +37,7 @@ public class GlobalExceptionHandler
                 .message("Internal server error")
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .timestamp(LocalDateTime.now()).get();
-
+        logger.error(ex.getMessage(),ex);
         return ResponseEntity.internalServerError()
                 .body(dto);
     }
@@ -47,6 +50,7 @@ public class GlobalExceptionHandler
                 .status(HttpStatus.BAD_REQUEST)
                 .timestamp(LocalDateTime.now())
                 .get();
+        logger.error(ex.getMessage(),ex);
         return ResponseEntity.badRequest().body(dto);
     }
 }
