@@ -19,17 +19,17 @@
         }
         public BuildExceptionDTO message(String message)
         {
-            this.query.message = message;
+            this.query.setMessage(message);
             return this;
         }
         public BuildExceptionDTO status(HttpStatus status)
         {
-            this.query.status = status;
+            this.query.setStatus(status);;
             return this;
         }
         public BuildExceptionDTO timestamp(LocalDateTime timestamp)
         {
-            this.query.timestamp = timestamp;
+            this.query.setTimestamp(timestamp);
             return this;
         }
         public ExceptionDTO get()

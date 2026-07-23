@@ -26,12 +26,4 @@ import java.util.List;
 
         @Column(unique = true)
         private String email;
-        @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-        private List<Order> orders = new ArrayList<>();
-
-        public void withOrders(Order order)
-        {
-            this.orders.add(order);
-            order.setUser(this);
-        }
     }

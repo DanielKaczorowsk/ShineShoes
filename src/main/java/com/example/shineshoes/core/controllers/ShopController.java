@@ -19,7 +19,7 @@ import java.util.Map;
 @Slf4j
 @RestController
 @RequestMapping("/api/v1/shopSite")
-@CrossOrigin(origins = "${app.cors.allowed-origins}" , allowCredentials = "true")
+@CrossOrigin(allowCredentials = "true")
 public class ShopController
 {
     private final HomeServices homeServices;
