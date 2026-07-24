@@ -1,14 +1,12 @@
 package com.example.shineshoes.core.builders.user.login;
 
-import com.example.shineshoes.core.dto.UserDTO;
+import com.example.shineshoes.core.dto.Users.UserLoginDTO;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.Date;
-@Component
 
 public class GenerateToken implements LoginBuilderInterface
 {
@@ -23,16 +21,18 @@ public class GenerateToken implements LoginBuilderInterface
         this.expiration = expiration;
     }
     @Override
-    public void build(UserDTO query)
+    public void build(UserLoginDTO userLoginDTO, LoginContext context)
     {
         Key key = Keys.hmacShaKeyFor(this.secret.getBytes());
 
         String token = Jwts.builder()
-                .subject(query.getName())
+                .subject(userLoginDTO.getEmail())
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + this.expiration))
                 .signWith(key)
                 .compact();
-        query.setToken(token);
+        context.setToken(token);
+        context.setEmail(userLoginDTO.getEmail());
+        context.setProvider("Local");
     }
 }

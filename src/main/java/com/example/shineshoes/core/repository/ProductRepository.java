@@ -1,6 +1,6 @@
 package com.example.shineshoes.core.repository;
 
-import com.example.shineshoes.core.dto.SimpleProductDTO;
+import com.example.shineshoes.core.dto.Product.SimpleProductDTO;
 import com.example.shineshoes.core.model.product.Product;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

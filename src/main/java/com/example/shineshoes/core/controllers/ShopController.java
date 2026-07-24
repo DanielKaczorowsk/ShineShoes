@@ -1,7 +1,7 @@
 package com.example.shineshoes.core.controllers;
-import com.example.shineshoes.core.dto.ManagementDTO;
-import com.example.shineshoes.core.dto.SimpleLittleProductDTO;
-import com.example.shineshoes.core.dto.SimpleProductDTO;
+import com.example.shineshoes.core.dto.Product.ManagementDTO;
+import com.example.shineshoes.core.dto.Product.SimpleLittleProductDTO;
+import com.example.shineshoes.core.dto.Product.SimpleProductDTO;
 import com.example.shineshoes.core.model.product.Product;
 import com.example.shineshoes.core.services.BasketServices;
 import com.example.shineshoes.core.services.ManagementProduct;

@@ -1,6 +1,6 @@
 package com.example.shineshoes.core.services;
 
-import com.example.shineshoes.core.dto.ManagementDTO;
+import com.example.shineshoes.core.dto.Product.ManagementDTO;
 import com.example.shineshoes.core.model.product.Category;
 import com.example.shineshoes.core.model.product.Product;
 import com.example.shineshoes.core.model.product.ProductVariant;

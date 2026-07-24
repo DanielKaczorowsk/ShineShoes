@@ -24,6 +24,6 @@ import java.util.List;
         @Column(nullable = false, length = 100)
         private String password;
 
-        @Column(unique = true)
+        @Column(nullable = false, unique = true)
         private String email;
     }

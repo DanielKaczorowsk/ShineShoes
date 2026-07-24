@@ -1,7 +1,7 @@
 package com.example.shineshoes.core.services;
 
 
-import com.example.shineshoes.core.dto.SimpleProductDTO;
+import com.example.shineshoes.core.dto.Product.SimpleProductDTO;
 import com.example.shineshoes.core.model.product.Product;
 import com.example.shineshoes.core.repository.ProductRepository;
 import jakarta.transaction.Transactional;

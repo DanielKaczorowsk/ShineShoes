@@ -1,0 +1,13 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/appdb
+    username: ${USER_DB}
+    password: ${PASSWORD_DB}
+  mail:
+    username: ${EMAIL}
+    password: ${PASSWORD_EMAIL}
+  jpa:
+    show-sql: false
+jwt:
+  secret: ${JWT_SECRET}
+  expiration: 3600000

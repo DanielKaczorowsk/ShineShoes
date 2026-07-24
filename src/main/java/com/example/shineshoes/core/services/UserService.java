@@ -2,7 +2,9 @@ package com.example.shineshoes.core.services;
 
 import com.example.shineshoes.core.cache.UserLoginCache;
 import com.example.shineshoes.core.cache.UserRegisterCache;
-import com.example.shineshoes.core.dto.UserDTO;
+import com.example.shineshoes.core.dto.Users.SimpleResultUserDTO;
+import com.example.shineshoes.core.dto.Users.UserLoginDTO;
+import com.example.shineshoes.core.dto.Users.UserRegisterDTO;
 import com.example.shineshoes.core.factory.UserFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,9 +19,12 @@ public class UserService
     private final UserLoginCache login;
     @Transactional
 
-    public void register(UserDTO query)
+    public void register(UserRegisterDTO userRegisterDTO)
     {
-        this.userFactory.execute(query,register);
+        this.userFactory.execute(userRegisterDTO,register);
     }
-    public void login(UserDTO query){this.userFactory.execute(query,login);}
+    public SimpleResultUserDTO login(UserLoginDTO userLoginDTO)
+    {
+        return this.userFactory.execute(userLoginDTO,login);
+    }
 }

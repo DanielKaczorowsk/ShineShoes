@@ -1,4 +1,4 @@
-package com.example.shineshoes.core.dto;
+package com.example.shineshoes.core.dto.Product;
 
 import java.math.BigDecimal;
 

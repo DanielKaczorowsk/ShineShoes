@@ -1,6 +1,7 @@
 package com.example.shineshoes.core.controllers;
 
-import com.example.shineshoes.core.dto.UserDTO;
+import com.example.shineshoes.core.dto.Users.UserLoginDTO;
+import com.example.shineshoes.core.dto.Users.UserRegisterDTO;
 import com.example.shineshoes.core.services.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -17,14 +18,14 @@ public class AuthController {
         this.userService = userService;
     }
     @PostMapping("/register")
-    public ResponseEntity<String> register(@Valid @RequestBody UserDTO userDTO) {
-        userService.register(userDTO);
+    public ResponseEntity<String> register(@Valid @RequestBody UserRegisterDTO userRegisterDTO) {
+        userService.register(userRegisterDTO);
         return ResponseEntity.ok("Użytkownik zarejestrowany pomyślnie!");
     }
     public record LoginResponse(String token) {}
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@Valid @RequestBody UserDTO userDTO) {
-        userService.login(userDTO);
-        return ResponseEntity.ok(new LoginResponse(userDTO.getToken()));
+    public ResponseEntity<LoginResponse> login(@Valid @RequestBody UserLoginDTO userLoginDTO) {
+        userService.login(userLoginDTO);
+        return ResponseEntity.ok(new LoginResponse(userLoginDTO.getToken()));
     }
 }

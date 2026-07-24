@@ -1,6 +1,5 @@
 package com.example.shineshoes.core.model.product;
 
-import com.example.shineshoes.core.model.Order;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -39,9 +38,6 @@ public class Product
 
     private boolean top;
 
-    @ManyToMany(mappedBy = "products")
-    @JsonIgnore
-    private List<Order> orders = new ArrayList<>();
     @ManyToMany(fetch = FetchType.LAZY)
     @JsonIgnore
     @JoinTable(name = "product_categories",

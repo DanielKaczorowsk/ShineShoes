@@ -1,4 +1,4 @@
-package com.example.shineshoes.core.dto;
+package com.example.shineshoes.core.dto.Product;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

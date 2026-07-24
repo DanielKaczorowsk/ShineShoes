@@ -1,6 +1,6 @@
 package com.example.shineshoes.core.services;
 
-import com.example.shineshoes.core.dto.SimpleLittleProductDTO;
+import com.example.shineshoes.core.dto.Product.SimpleLittleProductDTO;
 import com.example.shineshoes.core.exceptions.ErrorCode;
 import com.example.shineshoes.core.exceptions.ShopException;
 import com.example.shineshoes.core.model.User;
