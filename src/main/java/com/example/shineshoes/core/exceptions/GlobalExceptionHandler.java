@@ -26,7 +26,8 @@ public class GlobalExceptionHandler
                 .status(error.getStatus())
                 .timestamp(LocalDateTime.now())
                 .get();
-        logger.error(ex.getMessage(),ex);
+        logger.warn("Error Aplication: Status={}, Code={}, Message={}",
+                error.getStatus(), error, error.getMessage());
         return ResponseEntity.status(error.getStatus()).body(dto);
     }
     @ExceptionHandler(Exception.class)
@@ -37,7 +38,7 @@ public class GlobalExceptionHandler
                 .message("Internal server error")
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .timestamp(LocalDateTime.now()).get();
-        logger.error(ex.getMessage(),ex);
+        logger.error("Unexpected system error: {}", ex.getMessage(), ex);
         return ResponseEntity.internalServerError()
                 .body(dto);
     }
@@ -46,11 +47,13 @@ public class GlobalExceptionHandler
     {
         FieldError fieldError = ex.getBindingResult().getFieldError();
         BuildExceptionDTO builderDTO = new BuildExceptionDTO();
-        ExceptionDTO dto = builderDTO.message(fieldError != null ? fieldError.getDefaultMessage() : "Invaild input")
+        String messageError = fieldError != null ? fieldError.getDefaultMessage() : "Invaild input";
+        String fieldNameError = fieldError != null ? fieldError.getField() : "Unknown field name";
+        ExceptionDTO dto = builderDTO.message(messageError)
                 .status(HttpStatus.BAD_REQUEST)
                 .timestamp(LocalDateTime.now())
                 .get();
-        logger.error(ex.getMessage(),ex);
+        logger.warn("HTTP request validation error message : {} and field: {}", messageError,fieldNameError);
         return ResponseEntity.badRequest().body(dto);
     }
 }
