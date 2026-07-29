@@ -31,11 +31,10 @@ public class UserFactory
     public SimpleResultUserDTO execute(UserLoginDTO query, UserLoginCache loginCache)
     {
         LoginContext loginContext = new LoginContext();
-        SimpleResultUserDTO simpleResultUserDTO = new SimpleResultUserDTO(loginContext.getToken(),loginContext.getEmail(),loginContext.getProvider());
         List<LoginBuilderInterface> builders = loginCache.getCache().stream()
                 .map(clazz -> (LoginBuilderInterface) context.getBean(clazz))
                 .toList();
         director.build(query,builders,loginContext);
-        return simpleResultUserDTO;
+        return new SimpleResultUserDTO(loginContext.getToken(),loginContext.getEmail(),loginContext.getProvider());
     }
 }

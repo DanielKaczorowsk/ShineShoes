@@ -38,7 +38,7 @@ Custom Exception in GlobalExceptionHandler
         return ResponseEntity.status(error.getStatus()).body(dto);
     }
 ```
-## Microservices
+## Module
 ### Basket/Favorite Services
     A simple system for sending data from the frontend to a DTO,
     utilizing `@RequestBody` and `@AuthenticationPrincipal` for user authorization.
