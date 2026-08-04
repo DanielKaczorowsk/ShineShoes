@@ -41,6 +41,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/v1/auth/**").permitAll()
                         .requestMatchers("/api/v1/shopSite/**").permitAll()
+                        .requestMatchers("/api/v1/shopSite/basket").authenticated()
+                        .requestMatchers("/api/v1/auth/me").authenticated()
                         .requestMatchers("/ws/**").permitAll()
                         .anyRequest().authenticated()
                 ).sessionManagement(session -> session
@@ -54,7 +56,8 @@ public class SecurityConfig {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
         corsConfiguration.setAllowedOriginPatterns(allowedOrigins);
         corsConfiguration.setAllowedMethods(java.util.List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        corsConfiguration.setAllowedHeaders(java.util.List.of("*"));
+        corsConfiguration.setAllowedHeaders(java.util.List.of("Authorization","Content-Type","Accept","Origin","X-Requested-With"));
+        corsConfiguration.setExposedHeaders(java.util.List.of("Authorization"));
         corsConfiguration.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", corsConfiguration);

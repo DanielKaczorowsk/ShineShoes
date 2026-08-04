@@ -11,10 +11,17 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app-network
 
   backend:
     build: .
-    container_name: ShineSHoes_Backend
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8080/actuator/health" ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    container_name: ShineShoes_Backend
     depends_on:
       - db
     ports:
@@ -25,6 +32,21 @@ services:
       SPRING_DATASOURCE_USERNAME: db_postgres
       SPRING_DATASOURCE_PASSWORD: postgres
     restart: always
-
+    networks:
+      - app-network
+  frontend:
+    build:
+      context: ./frontend
+    container_name: ShineShoes_Frontend
+    ports:
+      - "3000:80"
+    environment:
+      - BACKEND_URL=http://backend:8081
+    depends_on:
+      - backend
+    networks:
+      - app-network
+networks:
+  app-network:
 volumes:
   postgres_data:

@@ -3,6 +3,7 @@ const API_URL = "http://localhost:8081/api/v1";
 export const loginUser = async (email, password) => {
     const response = await fetch(`${API_URL}/auth/login`, {
         method: 'POST',
+        credentials: 'include',
         headers: {
             'Content-Type': 'application/json',
         },
@@ -14,6 +15,25 @@ export const loginUser = async (email, password) => {
     }
     return response.json();
 };
+export const checkAuthStatus = async () =>
+{
+    const response = await fetch(`${API_URL}/auth/me`,{
+        method:'POST',
+        credentials:'include',
+    })
+    if(!response.ok)
+    {
+        throw new Error('Sesja wygasła');
+    }
+    return await response.json();
+}
+export const logoutUser = async () =>
+{
+     await fetch(`${API_URL}/auth/logout`, {
+        method:'POST',
+        credentials:'include',
+    })
+}
 export const registerUser = async (name, email, password) => {
     const response = await fetch(`${API_URL}/auth/register`, {
         method: 'POST',
@@ -30,13 +50,4 @@ export const registerUser = async (name, email, password) => {
     }
 
     return response.text();
-};
-export const getProtectedData = async (endpoint) => {
-    const token = localStorage.getItem('token');
-    const response = await fetch(`${API_URL}${endpoint}`, {
-        headers: {
-            'Authorization': `Bearer ${token}`
-        }
-    });
-    return response.json();
 };

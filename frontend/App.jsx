@@ -10,8 +10,8 @@ import FormProduct from "./components/FormProduct";
 import Home from "./components/Home";
 import ProductView from "./components/ProductView";
 import { addBasket } from "./api/ShopProvider";
-import {useGetDataProvider} from "./api/GetProviderData";
 import {useSetDataProvider} from "./api/SetDataProvider";
+import {checkAuthStatus, logoutUser} from "./api/api";
 
 const ProtectedRoute = ({ isLoggedIn }) => {
     if (!isLoggedIn) return <Navigate to="/login" replace />;
@@ -59,7 +59,9 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 function App() {
-    const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('token'));
+    const [user, setUser] = useState(null);
+    const [isLoggedIn, setIsLoggedIn] = useState(null);
+    const [loading,setLoading] = useState(null);
     const [productData, setProductData] = useState({
         name: '',
         category: [],
@@ -71,11 +73,46 @@ function App() {
         ]
     });
     const { execute: addToBasket, status } = useSetDataProvider(() => addBasket(productData));
-    const handleLogout = () => {
-        localStorage.removeItem('token');
-        setIsLoggedIn(false);
+    const handleLogout = async () =>
+    {
+        try
+        {
+            await logoutUser();
+        }
+        catch (err)
+        {
+            console.log(err);
+        }
+        finally
+        {
+            setUser(null);
+            setIsLoggedIn(false);
+        }
     };
-
+    useEffect(() =>
+    {
+        const verifyUser = async ()=>
+        {
+            try
+            {
+                const data = await checkAuthStatus();
+                setIsLoggedIn(true);
+                setUser(data);
+            }
+            catch (err)
+            {
+                setUser(null)
+            }
+            finally {
+                setLoading(false)
+            }
+        };
+        verifyUser();
+    }, []);
+    if(loading)
+    {
+        return <div>Ładowanie aplikacji...</div>;
+    }
     return (
         <Router>
             <Disclosure as="nav" className="relative top-5 bg-white border-b p-4">

@@ -6,14 +6,12 @@ const LoginForm = ({onLoginSuccess}) => {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const navigate = useNavigate();
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
         try {
             const data = await loginUser(name, password);
             if (data) {
-                localStorage.setItem('token', data);
                 onLoginSuccess(data);
                 navigate('/dashboard');
             }

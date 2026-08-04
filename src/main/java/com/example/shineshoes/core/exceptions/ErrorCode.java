@@ -12,6 +12,7 @@ public enum ErrorCode
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "User not found"),
     INVALID_CREDENTIALS(HttpStatus.UNAUTHORIZED, "Invalid email or password"),
     EMAIL_USED(HttpStatus.CONFLICT,"Email is already in use"),
+    UNAUTHORIZED(HttpStatus.UNAUTHORIZED,"unauthorized session"),
     NAME_USED(HttpStatus.CONFLICT,"Name is already in use"),
     EMAIL_ERROR(HttpStatus.CONFLICT,"Can't send email"),
     PRODUCT_VARIANT_NOT_FOUND(HttpStatus.NOT_FOUND, "Product variant not found");

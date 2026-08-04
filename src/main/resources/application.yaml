@@ -1,4 +1,9 @@
 spring:
+  management:
+    endpoints:
+      web:
+        exposure:
+          include: health
   application:
     name: ShineShoes
   datasource:

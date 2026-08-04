@@ -27,6 +27,5 @@ public class LoginBuilder implements LoginBuilderInterface
         {
             throw new ShopException(ErrorCode.INVALID_CREDENTIALS);
         }
-        userLoginDTO.setEmail(user.getName());
     }
 }

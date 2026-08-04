@@ -3,9 +3,15 @@ package com.example.shineshoes.core.controllers;
 import com.example.shineshoes.core.dto.Users.SimpleResultUserDTO;
 import com.example.shineshoes.core.dto.Users.UserLoginDTO;
 import com.example.shineshoes.core.dto.Users.UserRegisterDTO;
+import com.example.shineshoes.core.exceptions.ErrorCode;
+import com.example.shineshoes.core.exceptions.ShopException;
 import com.example.shineshoes.core.services.UserService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -23,10 +29,36 @@ public class AuthController {
         userService.register(userRegisterDTO);
         return ResponseEntity.ok("Użytkownik zarejestrowany pomyślnie!");
     }
-    public record LoginResponse(String token) {}
+    public record UserResponse(String email) {}
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@Valid @RequestBody UserLoginDTO userLoginDTO) {
+    public ResponseEntity<UserResponse> login(@Valid @RequestBody UserLoginDTO userLoginDTO) {
         SimpleResultUserDTO simpleResultUserDTO = userService.login(userLoginDTO);
-        return ResponseEntity.ok(new LoginResponse(simpleResultUserDTO.token()));
+        ResponseCookie cookie = ResponseCookie.from("jwt",simpleResultUserDTO.token())
+                .httpOnly(true)
+                .secure(true)
+                .path("/")
+                .maxAge(3600)
+                .sameSite("Strict")
+                .build();
+        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body(new UserResponse(simpleResultUserDTO.email()));
+    }
+    @PostMapping("/logout")
+    public  ResponseEntity<?> logout()
+    {
+        ResponseCookie cookie = ResponseCookie.from("jwt","").httpOnly(true).secure(true)
+                .path("/").maxAge(0).sameSite("Strict").build();
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, cookie.toString())
+                .body("Pomyślnie wylogowano");
+    }
+    @PostMapping("/me")
+    public ResponseEntity<?> checkSession(@AuthenticationPrincipal UserDetails userDetails)
+    {
+        if(userDetails == null)
+        {
+            throw new ShopException(ErrorCode.UNAUTHORIZED);
+        }
+
+        return ResponseEntity.ok(new UserResponse(userDetails.getUsername()));
     }
 }

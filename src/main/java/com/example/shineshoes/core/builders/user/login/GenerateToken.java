@@ -26,9 +26,9 @@ public class GenerateToken implements LoginBuilderInterface
     public void build(UserLoginDTO userLoginDTO, LoginContext context)
     {
         Key key = Keys.hmacShaKeyFor(this.secret.getBytes());
-
+        System.out.println(">>> [DEBUG LOGIN DTO EMAIL]: '" + userLoginDTO.getEmail() + "'");
         String token = Jwts.builder()
-                .subject(userLoginDTO.getEmail())
+                .subject(userLoginDTO.getEmail().toLowerCase().trim())
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + this.expiration))
                 .signWith(key)
