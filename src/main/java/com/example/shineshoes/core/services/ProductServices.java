@@ -1,6 +1,6 @@
 package com.example.shineshoes.core.services;
 
-import com.example.shineshoes.core.dto.Product.ManagementDTO;
+import com.example.shineshoes.core.dto.Product.ProductDTO;
 import com.example.shineshoes.core.model.product.Category;
 import com.example.shineshoes.core.model.product.Product;
 import com.example.shineshoes.core.model.product.ProductVariant;
@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Slf4j
 
-public class ManagementProduct
+public class ProductServices
 {
     private final ProductRepository productRepository;
     private final VariantRepository variantRepository;
@@ -38,7 +38,7 @@ public class ManagementProduct
     }
     */
 
-    public void addProduct(ManagementDTO productDTO)
+    public void addProduct(ProductDTO productDTO)
     {
 
         Product product = productRepository.findByNameAndModel(productDTO.getName(), productDTO.getModel()).orElseGet(()->{

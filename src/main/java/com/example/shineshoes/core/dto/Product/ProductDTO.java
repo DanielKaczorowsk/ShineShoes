@@ -14,7 +14,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ManagementDTO
+public class ProductDTO
 {
     @NotBlank(message = "Brak nazwy")
     private String name;

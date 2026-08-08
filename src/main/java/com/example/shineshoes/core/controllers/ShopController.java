@@ -1,10 +1,10 @@
 package com.example.shineshoes.core.controllers;
-import com.example.shineshoes.core.dto.Product.ManagementDTO;
+import com.example.shineshoes.core.dto.Product.ProductDTO;
 import com.example.shineshoes.core.dto.Product.SimpleLittleProductDTO;
 import com.example.shineshoes.core.dto.Product.SimpleProductDTO;
 import com.example.shineshoes.core.model.product.Product;
 import com.example.shineshoes.core.services.BasketServices;
-import com.example.shineshoes.core.services.ManagementProduct;
+import com.example.shineshoes.core.services.ProductServices;
 import com.example.shineshoes.core.services.HomeServices;
 import com.example.shineshoes.security.UserPrincipal;
 import lombok.extern.slf4j.Slf4j;
@@ -24,11 +24,11 @@ public class ShopController
 {
     private final HomeServices homeServices;
     private final BasketServices basketServices;
-    private final ManagementProduct managementProduct;
-    public ShopController (HomeServices homeServices, BasketServices basketServices, ManagementProduct managementProduct){
+    private final ProductServices productServices;
+    public ShopController (HomeServices homeServices, BasketServices basketServices, ProductServices productServices){
         this.homeServices = homeServices;
         this.basketServices = basketServices;
-        this.managementProduct = managementProduct;
+        this.productServices = productServices;
     }
     @GetMapping("/newproduct")
     public ResponseEntity<List<SimpleProductDTO>> newBoots()
@@ -66,15 +66,15 @@ public class ShopController
     /**
      * Controller function for adding products and their variants and adding existing variants
      * Data sent from the frontend with product data
-     * @param managementDTO data of product sent from the frontend
+     * @param productDTO data of product sent from the frontend
      * @return Reply http to frontend
      */
     @PostMapping(value = "/addproduct",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> addProduct(@RequestPart("managementDTO") ManagementDTO managementDTO)
+    public ResponseEntity<?> addProduct(@RequestPart("managementDTO") ProductDTO productDTO)
                                             /*,
                                              @RequestPart("images") List<MultipartFile> images)*/
     {
-            managementProduct.addProduct(managementDTO);
+            productServices.addProduct(productDTO);
             return ResponseEntity.ok(Map.of("message", "The product has been added for consideration!"));
     }
 }

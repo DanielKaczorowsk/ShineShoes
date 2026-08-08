@@ -1,0 +1,70 @@
+name: Java CI/CD with Docker
+on:
+  push:
+    branches: ["main"]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_DB: shineshoes_test
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - name: Download code from Github
+        uses: actions/checkout@v4
+
+      - name: Configuration IDE Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Turn on and build application (Maven)
+        env:
+          SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/shineshoes_test
+          SPRING_DATASOURCE_USERNAME: postgres
+          SPRING_DATASOURCE_PASSWORD: password
+        run: ./mvnw clean package
+
+      - name: Login to docker
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and send docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/shineshoes:latest
+
+  deploy:
+        needs: build-and-test
+        runs-on: ubuntu-latest
+
+        steps:
+          - name: Serves SSH
+            uses: appleboy/ssh-action@v1.0.0
+            with:
+              host: ${{ secrets.SERVER_HOST }}
+              username: ${{ secrets.SERVER_USER }}
+              key: ${{ secrets.SSH_PRIVATE_KEY }}
+              script: |
+                cd /app/shineshoes
+                docker compose pull
+                docker compose up -d
+          
+
