@@ -48,7 +48,6 @@
                             .parseSignedClaims(token)
                             .getPayload();
                     String username = claims.getSubject();
-                    System.out.println(">>> [DEBUG JWT] Extracted Subject from token: '" + username + "'");
                     if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                         UserPrincipal userPrincipal = this.userDetailsServices.loadUserByUsername(username);
                         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
@@ -58,7 +57,6 @@
                         SecurityContextHolder.getContext().setAuthentication(authToken);
                     }
                 } catch (Exception e) {
-                    System.out.println("Error verify token:" + e.getMessage());
                     logger.error("Error verify token:", e);
                     SecurityContextHolder.clearContext();
                 }

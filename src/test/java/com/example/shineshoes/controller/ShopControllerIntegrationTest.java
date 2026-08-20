@@ -1,6 +1,7 @@
 package com.example.shineshoes.controller;
-
-import com.example.shineshoes.core.controllers.ShopController;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import com.example.shineshoes.core.dto.Product.ProductDTO;
 import com.example.shineshoes.core.dto.Product.ProductVariantDTO;
 import com.example.shineshoes.core.dto.Product.SimpleLittleProductDTO;
@@ -9,7 +10,6 @@ import com.example.shineshoes.core.repository.BasketRepository;
 import com.example.shineshoes.core.repository.ProductRepository;
 import java.util.ArrayList;
 import java.util.List;
-
 import com.example.shineshoes.security.CustomUserDetailsService;
 import com.example.shineshoes.security.UserPrincipal;
 import org.junit.jupiter.api.AfterEach;
@@ -17,16 +17,18 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
+import tools.jackson.databind.ObjectMapper;
 
 import java.math.BigDecimal;
-import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.AssertionsKt.assertNotNull;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @Transactional
@@ -36,14 +38,21 @@ public class ShopControllerIntegrationTest
     private ProductRepository productRepository;
 
     @Autowired
+    CustomUserDetailsService customUserDetailsService;
+
+    @Autowired
     private BasketRepository basketRepository;
 
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     @Autowired
-    private ShopController shopController;
+    private MockMvc mockMvc;
 
     @Autowired
-    CustomUserDetailsService customUserDetailsService;
-    private ProductDTO productDTO;
+    private ObjectMapper objectMapper;
+
+    private MockMultipartFile mockMultipartFile;
+
+    private UserPrincipal userPrincipal;
 
     @BeforeEach
     void setUp()
@@ -53,41 +62,72 @@ public class ShopControllerIntegrationTest
         productVariantList.add(productVariantDTO);
         List<String> category = new ArrayList<>();
         category.add("Sports");
-        productDTO = ProductDTO.builder().name("Nike")
+        ProductDTO productDTO = ProductDTO.builder().name("Nike")
                 .model("AirMax")
                 .description("Test Description")
                 .price(BigDecimal.valueOf(300))
                 .productVariantDTO(productVariantList)
                 .category(category)
                 .build();
+        mockMultipartFile = new MockMultipartFile("productDTO" , "","application/json",objectMapper.writeValueAsBytes(productDTO));
     }
     @BeforeEach
     public void setSecurityContext()
     {
-        UserPrincipal userPrincipal = customUserDetailsService.loadUserByUsername("d.kaczorowski.1999@gmail.com");
-        Authentication auth = new UsernamePasswordAuthenticationToken(userPrincipal, null, userPrincipal.getAuthorities());
-        SecurityContextHolder.getContext().setAuthentication(auth);
+         userPrincipal = customUserDetailsService.loadUserByUsername("test@shineshoes.com");
+    }
+    private void createProductAndAssertResponse() throws Exception {
+        mockMvc.perform(multipart("/addproduct").file(mockMultipartFile))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").exists())
+                .andExpect(jsonPath("$.name").value("Nike"))
+                .andExpect(jsonPath("$.model").value("AirMax"))
+                .andExpect(jsonPath("$.description").value("Test Description"))
+                .andExpect(jsonPath("$.price").value(BigDecimal.valueOf(300)))
+                .andExpect(jsonPath("$.productVariantDTO").exists())
+                .andExpect(jsonPath("$.category").exists());
     }
     @Test
-    public void whenAddProduct()
-    {
+    public void addProductShouldReturnCreatedWithCorrectData() throws Exception {
         long countBefore = productRepository.count();
-        shopController.addProduct(productDTO);
+        createProductAndAssertResponse();
         long countAfter = productRepository.count();
-        assertEquals(countBefore+1,countAfter);
+        assertEquals(countBefore + 1, countAfter);
     }
     @Test
-    public void whenAddToBasket()
-    {
-        shopController.addProduct(productDTO);
-        Product product = productRepository.findAll().getFirst();
+    public void addProductWithoutDTO() throws Exception {
+        mockMvc.perform(multipart("/addproduct")
+                .file(
+                        new MockMultipartFile("productDTO" ,
+                                "",
+                                "application/json",objectMapper.writeValueAsBytes("")))).andExpect(status().isNotFound());
+
+    }
+    @Test
+    public void addProductToBasketShouldIncreaseBasketCount() throws Exception {
+        createProductAndAssertResponse();
+        List<Product> products = productRepository.findAll();
+        Product product = products.stream().filter(p->p.getName().equals("Nike")).findFirst().orElseThrow();
         SimpleLittleProductDTO simpleLittleProductDTO = new SimpleLittleProductDTO(product.getId(), 3);
-        UserPrincipal principal = (UserPrincipal) Objects.requireNonNull(SecurityContextHolder.getContext().getAuthentication()).getPrincipal();
         long countBefore = basketRepository.count();
-        assertNotNull(principal);
-        shopController.addToBasket(simpleLittleProductDTO,principal);
+        mockMvc.perform(post("/basket/add")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(simpleLittleProductDTO))
+                .with(user(userPrincipal))).andExpect(status().isCreated());
         long countAfter = basketRepository.count();
         assertEquals(countBefore+1,countAfter);
+    }
+    @Test
+    public void addProductToBaskedWithoutAuth() throws Exception
+    {
+        createProductAndAssertResponse();
+        List<Product> products = productRepository.findAll();
+        Product product = products.stream().filter(p->p.getName().equals("Nike")).findFirst().orElseThrow();
+        SimpleLittleProductDTO simpleLittleProductDTO = new SimpleLittleProductDTO(product.getId(), 3);
+        mockMvc.perform(post("/basket/add")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(simpleLittleProductDTO))
+                        .with(user(""))).andExpect(status().isUnauthorized());
     }
     @AfterEach
     public void clearSecurityContext()
