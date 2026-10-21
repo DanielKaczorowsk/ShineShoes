@@ -15,7 +15,8 @@ public enum ErrorCode
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED,"unauthorized session"),
     NAME_USED(HttpStatus.CONFLICT,"Name is already in use"),
     EMAIL_ERROR(HttpStatus.CONFLICT,"Can't send email"),
-    PRODUCT_VARIANT_NOT_FOUND(HttpStatus.NOT_FOUND, "Product variant not found");
+    PRODUCT_VARIANT_NOT_FOUND(HttpStatus.NOT_FOUND, "Product variant not found"),
+    PRODUCT_NOT_FOUND(HttpStatus.NOT_FOUND,"Product not found");
 
     private final HttpStatus status;
     private final String message;

@@ -17,10 +17,11 @@ import java.util.List;
 public class HomeServices
 {
     public final ProductRepository productRepository;
+
     @Transactional
-    public List<SimpleProductDTO> getNewBoots()
+    public List<SimpleProductDTO> getNewBoots(Long id)
     {
-        return productRepository.findTop30ByOrderByCreatedAtDesc();
+        return productRepository.findTop10ProductWithFavorites(id, Pageable.ofSize(10));
     }
     @Transactional
     public List<Product> getTopProduct(String name)

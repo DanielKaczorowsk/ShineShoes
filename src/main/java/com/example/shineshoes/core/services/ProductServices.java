@@ -1,10 +1,15 @@
 package com.example.shineshoes.core.services;
 
+import com.example.shineshoes.core.MapStruct.ProductUpdateMapper;
 import com.example.shineshoes.core.dto.Product.ProductDTO;
+import com.example.shineshoes.core.dto.Product.UpdateProductDTO;
+import com.example.shineshoes.core.exceptions.ErrorCode;
+import com.example.shineshoes.core.exceptions.ShopException;
 import com.example.shineshoes.core.model.product.Category;
 import com.example.shineshoes.core.model.product.Product;
 import com.example.shineshoes.core.model.product.ProductVariant;
 import com.example.shineshoes.core.repository.CategoryRepository;
+import com.example.shineshoes.core.repository.FavoriteItemsRepository;
 import com.example.shineshoes.core.repository.ProductRepository;
 import com.example.shineshoes.core.repository.VariantRepository;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +30,9 @@ public class ProductServices
     private final ProductRepository productRepository;
     private final VariantRepository variantRepository;
     private final CategoryRepository categoryRepository;
+    private final ProductUpdateMapper productUpdateMapper;
+    private final FavoriteItemsRepository favoriteItemsRespository;
+
     /**
      * Adds a product and a list of its variants to the database.
      * Updates quantities if the variant already exists.
@@ -80,5 +88,22 @@ public class ProductServices
                                 variantRepository.save(newproductVariant);
                 }));
         productRepository.save(product);
+    }
+    @Transactional
+    public void updateProduct(UpdateProductDTO updateProductDTO)
+    {
+        Product product = productRepository.findById(updateProductDTO.getId()).orElseThrow(()-> new ShopException(ErrorCode.EMPTY_ARRAY));
+        productUpdateMapper.updateEntityFromDto(updateProductDTO,product);
+        if(product.getCategories() != null)
+        {
+            List<Category> categoriesFromDb = categoryRepository.findAllByNameIn(updateProductDTO.getCategory());
+            product.setCategories(categoriesFromDb);
+        }
+    }
+    @Transactional
+    public void deleteProduct(long productId)
+    {
+        favoriteItemsRespository.deleteByProduct_Id(productId);
+        productRepository.deleteById(productId);
     }
 }

@@ -1,13 +1,16 @@
 package com.example.shineshoes.core.model.favorite;
 
-import com.example.shineshoes.core.model.product.ProductVariant;
+import com.example.shineshoes.core.model.product.Product;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name="FavoriteItem")
+@Table(name="favorite_items",
+        uniqueConstraints = {
+        @UniqueConstraint(name="uc_product_id_favorite_id",columnNames = {"product_id","favorite_id"})
+        })
 @NoArgsConstructor
 @Getter
 @Setter
@@ -18,12 +21,11 @@ public class FavoriteItem
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name="product_variant_id")
-    private ProductVariant productVariant;
+    @JoinColumn(name="product_id")
+    private Product product;
 
     @ManyToOne
     @JoinColumn(name="favorite_id")
     private Favorite favorite;
 
-    private int quantity;
 }

@@ -3,6 +3,7 @@ package com.example.shineshoes.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -39,11 +40,17 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/v1/auth/**").permitAll()
-                        .requestMatchers("/api/v1/shopSite/**").permitAll()
-                        .requestMatchers("/api/v1/shopSite/addproduct").authenticated()
-                        .requestMatchers("/api/v1/shopSite/basket").authenticated()
+
                         .requestMatchers("/api/v1/auth/me").authenticated()
+                        .requestMatchers("/api/v1/auth/**").permitAll()
+                        .requestMatchers("/favicon.ico", "/static/**").permitAll()
+                        .requestMatchers(HttpMethod.POST,"/api/v1/shopSite/addproduct").authenticated()
+                        .requestMatchers("/api/v1/shopSite/basket").authenticated()
+                        .requestMatchers(HttpMethod.GET,"/api/v1/shopSite/favorites/get").authenticated()
+                        .requestMatchers(HttpMethod.POST,"/api/v1/shopSite/favorites/add/**").authenticated()
+                        .requestMatchers(HttpMethod.DELETE,"/api/v1/shopSite/favorites/delete/**").authenticated()
+                        .requestMatchers("/api/v1/shopSite/**").permitAll()
+
                         .requestMatchers("/ws/**").permitAll()
                         .anyRequest().authenticated()
                 ).sessionManagement(session -> session

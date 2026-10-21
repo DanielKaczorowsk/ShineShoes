@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "BasketItem")
+@Table(name = "basket_items")
 @NoArgsConstructor
 @Getter
 @Setter
@@ -16,9 +16,11 @@ public class BasketItem
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @ManyToOne
     @JoinColumn(name = "product_variant_id")
     private ProductVariant productVariant;
+
     @ManyToOne
     @JoinColumn(name = "basket_id")
     private Basket basket;

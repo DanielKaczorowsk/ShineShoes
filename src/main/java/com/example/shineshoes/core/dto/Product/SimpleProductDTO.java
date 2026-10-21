@@ -7,5 +7,6 @@ public record SimpleProductDTO(
         String name,
         String description,
         String model,
-        BigDecimal price
+        BigDecimal price,
+        boolean favorite
 ) {}

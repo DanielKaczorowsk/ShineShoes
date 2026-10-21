@@ -10,13 +10,13 @@
     "cssVariables": true,
     "prefix": ""
   },
-  "iconLibrary": "lucide",
+  "iconLibrary": "lucid",
   "rtl": false,
   "aliases": {
-    "components": "../components",
-    "utils": "../lib/utils",
-    "ui": "../components/ui",
-    "lib": "../lib",
-    "hooks": "../hooks"
+    "components": "@/components",
+    "utils": "@/lib/utils",
+    "ui": "@/components/ui",
+    "lib": "@/lib",
+    "hooks": "@/hooks"
   }
 }

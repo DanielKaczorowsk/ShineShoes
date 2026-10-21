@@ -1,5 +1,4 @@
 const API_URL = "http://localhost:8081/api/v1";
-
 export const productProvider = async (
     productData,
     //img
@@ -28,3 +27,12 @@ export const productProvider = async (
 
     return response.json();
 };
+export  const productDelete = async (idProduct) =>{
+    const response = await fetch(`${API_URL}/shopSite/product/delete/${idProduct}`,{
+        method:'DELETE',
+    });
+    if(!response.ok){
+        const errorData = await response.text();
+        throw new Error(errorData || 'Error delete product from favorite')
+    }
+}

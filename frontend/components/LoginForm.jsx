@@ -1,18 +1,21 @@
 import React, { useState } from 'react';
 import { loginUser } from '../api/api';
 import { useNavigate,Link } from 'react-router-dom';
-const LoginForm = ({onLoginSuccess}) => {
+import {useAuth} from "../context/AuthContext";
+
+const LoginForm = () => {
     const [name, setName] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const navigate = useNavigate();
+    const { setUser } = useAuth();
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
         try {
             const data = await loginUser(name, password);
             if (data) {
-                onLoginSuccess(data);
+                setUser(data);
                 navigate('/dashboard');
             }
         } catch (err) {
@@ -39,7 +42,7 @@ const LoginForm = ({onLoginSuccess}) => {
                                     onChange={(e) => setName(e.target.value)}
                                     required
                                     autoComplete="email"
-                                    className="block w-full rounded-md bg-white/5 px-3 pt-3 pb-1 py-1.5 text-base text-black outline-1 -outline-offset-1 outline-black/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-gray-500 sm:text-sm/6"                                />
+                                    className="block w-full rounded-md bg-white/5 px-3 pt-3 pb-1 py-1.5 text-base text-black outline-1 -outline-offset-1 outline-black/10 sm:text-sm/6"                                />
                                 <label
                                     htmlFor="email"
                                     className="absolute left-2 -top-2 bg-white px-1 text-sm text-gray-600"
@@ -57,7 +60,7 @@ const LoginForm = ({onLoginSuccess}) => {
                                     onChange={(e) => setPassword(e.target.value)}
                                     required
                                     autoComplete="current-password"
-                                    className="block w-full rounded-md bg-white/5 px-3 pt-3 pb-1 py-1.5 text-base text-black outline-1 -outline-offset-1 outline-black/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-gray-500 sm:text-sm/6"
+                                    className="block w-full rounded-md bg-white/5 px-3 pt-3 pb-1 py-1.5 text-base text-black outline-1 focus:-outline-offset-2 focus:outline-gray-500 sm:text-sm/6"
                                 />
                                 <label
                                     htmlFor="password"

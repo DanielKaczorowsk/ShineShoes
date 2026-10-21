@@ -3,7 +3,8 @@ LABEL authors="DKacz"
 WORKDIR /build
 COPY pom.xml .
 COPY src ./src
-RUN mvn clean package -DskipTests
+#RUN mvn clean package -DskipTests
+RUN mvn clean test package
 
 FROM eclipse-temurin:21-jre
 WORKDIR /app

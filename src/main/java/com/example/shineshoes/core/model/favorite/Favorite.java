@@ -1,7 +1,7 @@
 package com.example.shineshoes.core.model.favorite;
 
 import com.example.shineshoes.core.model.User;
-import com.example.shineshoes.core.model.product.ProductVariant;
+import com.example.shineshoes.core.model.product.Product;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,23 +30,23 @@ public class Favorite
     /**
      * Adds a product variant to the favorite or updates its quantity if it already exists.
      *
-     * @param productVariant the product variant to add
-     * @param quantity the quantity to increase by
+     * @param product the product to add
      */
-    public void withProductVariant(ProductVariant productVariant,int quantity)
+    public void withProduct(Product product)
     {
-        for(FavoriteItem item : this.items)
-        {
-            if(item.getProductVariant().getId().equals(productVariant.getId()))
-            {
-                item.setQuantity(item.getQuantity()+quantity);
-                return;
-            }
+        if (product == null || product.getId() == null) {
+            return;
+        }
+
+        boolean alreadyExists = this.items.stream()
+                .anyMatch(item -> item.getProduct() != null && product.getId().equals(item.getProduct().getId()));
+
+        if (alreadyExists) {
+            return;
         }
         FavoriteItem favoriteItem = new FavoriteItem();
         favoriteItem.setFavorite(this);
-        favoriteItem.setProductVariant(productVariant);
-        favoriteItem.setQuantity(quantity);
+        favoriteItem.setProduct(product);
         this.items.add(favoriteItem);
     }
     /**

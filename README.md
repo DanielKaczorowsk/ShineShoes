@@ -1,3 +1,37 @@
+# 👟 ShineShoes
+
+A full-stack e-commerce application for browsing and purchasing shoes.
+
+## 🖥️ Screenshots
+
+### Homepage
+<p align="center">
+  <img src="ImageReadMe/img_1.png" width="100%" alt="ShineShoes homepage"/>
+</p>
+
+### Main features
+<table>
+  <tr>
+    <td width="50%">
+      <img src="ImageReadMe/img.png" width="100%" alt="Product listing"/>
+      <p align="center"><b>Primary Site</b></p>
+    </td>
+    <td width="50%">
+      <img src="docs/images/product-details.png" width="100%" alt="Product details"/>
+      <p align="center"><b>Favorites</b></p>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%">
+      <img src="ImageReadMe/img_2.png" width="100%" alt="Shopping cart"/>
+      <p align="center"><b>Admin Panel</b></p>
+    </td>
+    <td width="50%">
+      <img src="docs/images/profile.png" width="100%" alt="User profile"/>
+      <p align="center"><b>User profile</b></p>
+    </td>
+  </tr>
+</table>
 ## Table of contents
 
 - Login/Register
